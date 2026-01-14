@@ -74,7 +74,7 @@ def download_playlist(playlist_url: str, output_folder: str = None, quality: str
             'preferredcodec': 'mp3',
             'preferredquality': quality,
         }],
-        'outtmpl': str(output_folder / '%(playlist_index)03d - %(title)s.%(ext)s'),
+        'outtmpl': str(output_folder / '%(playlist_index)04d - %(title)s.%(ext)s'),
         'ffmpeg_location': str(script_dir),
         'ignoreerrors': True,
         'nooverwrites': True,

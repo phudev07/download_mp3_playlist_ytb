@@ -73,6 +73,16 @@ python download_playlist.py
 
 Nhập URL playlist khi được hỏi.
 
+### Lọc file trùng lặp
+
+Sau khi tải xong, nếu có file trùng:
+
+```bash
+python remove_duplicates.py
+```
+
+Script sẽ tự động phát hiện và xóa các bài hát trùng lặp (giữ lại bản có số thứ tự nhỏ hơn).
+
 ## ⚙️ Cấu hình
 
 | Biến | Mô tả | Mặc định |

@@ -92,6 +92,7 @@ class PlaylistDownloader:
     def _download_single(self, video_info: dict, index: int) -> tuple:
         """Tải một video thành MP3"""
         import yt_dlp
+        import re
         
         video_url = video_info.get('url') or video_info.get('webpage_url')
         title = video_info.get('title', 'Unknown')[:60]
@@ -99,6 +100,16 @@ class PlaylistDownloader:
         if not video_url:
             return False, f"No URL: {title}"
         
+        # Kiểm tra file đã tồn tại (với bất kỳ format số nào)
+        # Pattern: số + " - " + title
+        safe_title = re.sub(r'[<>:"/\\|?*]', '', title)[:50]
+        existing_files = list(self.output_folder.glob(f"*{safe_title[:30]}*.mp3"))
+        if existing_files:
+            count = self._increment_counter()
+            print(f"[{count}/{self.total_videos}] SKIP (exists): {title[:40]}")
+            return True, title
+        
+        # Dùng format 4 chữ số để hỗ trợ playlist lớn (1-9999)
         ydl_opts = {
             'format': 'bestaudio[ext=m4a]/bestaudio[ext=webm]/bestaudio/best',
             'postprocessors': [{
@@ -106,7 +117,7 @@ class PlaylistDownloader:
                 'preferredcodec': 'mp3',
                 'preferredquality': self.quality,
             }],
-            'outtmpl': str(self.output_folder / f'{index:03d} - %(title)s.%(ext)s'),
+            'outtmpl': str(self.output_folder / f'{index:04d} - %(title)s.%(ext)s'),
             'ffmpeg_location': str(self.script_dir),
             'ignoreerrors': True,
             'nooverwrites': True,
